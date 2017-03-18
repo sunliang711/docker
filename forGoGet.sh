@@ -8,8 +8,13 @@ find .  -name "*.go" -print0|xargs -0 sed -rn -e "/^import\s+\(/,/\)/p" -e "/^im
 # grep -Po '(?<=")[^/]+/[^/]+/[^/]+[^"]+(?=")' allImports | sort |uniq >result
 grep -Po '(?<=")[^.]+\.[^.]+/[^/]+/[^/]+[^"]+(?=")' allImports | sort |uniq >result
 
+totalLines=$(wc -l result | grep -Po '\d+')
+index=1
+RED=$(tput setaf 1)
+RESET=$(tput sgr0)
 #注意点,go get使用的是版本管理工具下载的,如果有需要的话,先设置git的proxy
 while read import;do
-    echo "go get $import ..."
+    echo -e "${RED}[${index}/${totalLines}]${RESET} go get ${RED}$import${RESET} ..."
     go get $import
+    ((index++))
 done<result
