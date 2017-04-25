@@ -327,11 +327,15 @@ cp $TMPDOCKER/hack/dockerfile/install-binaries.sh /tmp/install-binaries.sh
 # Wrap all commands in the "docker-in-docker" script to allow nested containers
 # ENTRYPOINT ["hack/dind"]
 
-# Upload docker source
-for i in $(ls -A $TMPDOCKER);do
-    cp -r "$TMPDOCKER/$i" /go/src/github.com/docker/docker
-done
-#cp -r $TMPDOCKER/* /go/src/github.com/docker/docker
+# for i in $(ls -A $TMPDOCKER);do
+#     cp -r "$TMPDOCKER/$i" /go/src/github.com/docker/docker
+# done
+cp -nr $TMPDOCKER/* /go/src/github.com/docker/docker
+cp -nr $TMPDOCKER/.git /go/src/github.com/docker/docker
+cp -nr $TMPDOCKER/.gitignore /go/src/github.com/docker/docker
+cp -nr $TMPDOCKER/.mailmap /go/src/github.com/docker/docker
+cp -nr $TMPDOCKER/.dockerignore /go/src/github.com/docker/docker
+cp -nr $TMPDOCKER/.idea /go/src/github.com/docker/docker
 
 cat>/go/src/github.com/docker/docker/compileDocker.sh<<'EOF'
 #compile docker using the following cmds
@@ -342,6 +346,7 @@ fi
 export PATH=/osxcross/target/bin:$PATH
 export PATH=/go/bin:/usr/local/go/bin:$PATH
 export GOPATH=/go
+
 cd /go/src/github.com/docker/docker
 hack/make.sh binary
 EOF
